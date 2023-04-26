@@ -19,7 +19,7 @@
   <img width="452" alt="Screenshot 2023-04-26 at 3 55 56 PM" src="https://user-images.githubusercontent.com/104536533/234721418-850de217-75bc-4711-b4e4-f3cda41cedee.png">
 
   
-  Once credentials are written, open mysql in the root directory and run SOURCE db/schema.sql; Quit out of mysql and run 'node run seed' in the terminal. Finally run 'npm start' in the terminal to start the server.
+  Once credentials are written, open mysql in the root directory and run SOURCE db/schema.sql; Quit out of mysql and run 'npm run seed' in the terminal. Finally run 'npm start' in the terminal to start the server.
 
   ## Usage
   This project is used to store data for an e-commerce website. Data can be retrieved, added, changed or deleted through various routes. To see this in action, you can open an instance of Insomnia and use the CRUD methods to any of the api endpoints.
