@@ -2,17 +2,42 @@ const router = require('express').Router();
 const { Product, Category, Tag, ProductTag } = require('../../models');
 
 // The `/api/products` endpoint
+// Using async await in all routes that need to be completed instead of .catch and .then
 
 // get all products
-router.get('/', (req, res) => {
-  // find all products
-  // be sure to include its associated Category and Tag data
+router.get('/', async (req, res) => {
+  try {
+    // Using findAll method to find all products
+    const products = await Product.findAll({
+      // including the Category and Tag models 
+      // using the through option to instruct sequelize to join Product and Tag using ProductTag as a reference
+      include: [{ model: Category }, { model: Tag, through: ProductTag }],
+    });
+    // return 200 staus and data if successful
+    res.status(200).json(products);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
-// get one product
-router.get('/:id', (req, res) => {
-  // find a single product by its `id`
-  // be sure to include its associated Category and Tag data
+// get one product by id
+router.get('/:id', async (req, res) => {
+  try {
+    // Using findbyPK here to get the product by specified id
+    const product = await Product.findByPk(req.params.id, {
+      // Using the same models as in the find all method
+      include: [{ model: Category }, { model: Tag, through: ProductTag }],
+    });
+    // Return an error message if no product is found with a maching id
+    if (!product) {
+      res.status(400).json({ message: 'No product found with this id!' });
+      return;
+    }
+    // Return 200 status and data if succesful
+    res.status(200).json(product);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 // create new product
@@ -89,8 +114,26 @@ router.put('/:id', (req, res) => {
     });
 });
 
-router.delete('/:id', (req, res) => {
-  // delete one product by its `id` value
+// Deleting a single product by id
+
+router.delete('/:id', async (req, res) => {
+  try {
+    // Using the destroy method to remove a product by id peramater
+    const product = await Product.destroy({
+      where: {
+        id: req.params.id,
+      },
+    });
+    // Return a 400 error and message to the user if no product id is found
+    if (!product) {
+      res.status(400).json({ message: 'No product found with this id!' });
+      return;
+    }
+    // Return data and success message
+    res.status(200).json({ message: 'Product deleted successfully!' });
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 module.exports = router;
